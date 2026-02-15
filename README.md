@@ -25,7 +25,8 @@ curl -fsSL https://raw.githubusercontent.com/stevenselcuk/json-diff/main/install
 No additional dependencies (like Rust) are required.
 
 ```bash
-brew install stevenselcuk/tap/json-diff
+brew tap stevenselcuk/tap
+brew install json-diff
 ```
 
 ### From Source
