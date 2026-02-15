@@ -1,0 +1,29 @@
+[package]
+name = "json-diff"
+version = "0.1.0"
+edition = "2021"
+description = "Large JSON files diff tool with TUI output"
+authors = ["Steven J. Selcuk <steven@tabbythecat.com>"]
+license = "MIT"
+repository = "https://github.com/stevenselcuk/json-diff"
+keywords = ["json", "diff", "tui", "cli"]
+
+[profile.release]
+strip = true      
+opt-level = 3   
+lto = true        
+codegen-units = 1 
+
+[dependencies]
+crossterm = "0.27"
+ratatui = "0.29" # En güncel sürüm
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+similar = { version = "2.4", features = ["inline"] }
+imara-diff = "0.1.7"
+clap = { version = "4.4", features = ["derive"] }
+anyhow = "1.0"
+tokio = { version = "1", features = ["full"] } # Async runtime
+throbber-widgets-tui = "0.3" # Yükleniyor animasyonu için
+memmap2 = "0.9"
+rayon = "1.8"
