@@ -105,15 +105,32 @@ When you press `s`, a popup will appear asking for the filename.
 - **Default**: `merged_output.json` (in the current directory).
 - **Action**: Type a new name or path and press `Enter` to save. Press `Esc` to cancel.
 
-## How to Release
+## How to Release for Curl & Homebrew
 
-To simplify the release process, use the provided script:
+Reminder for me:
 
 1.  Run `./package.sh`
-    - This builds the release binary.
-    - It creates a tarball (e.g., `json-diff-arm64-apple-darwin.tar.gz`) for your current OS/Arch.
-2.  Go to GitHub Releases.
-3.  Create a new release (e.g., `v0.1.0`).
-4.  Upload the `.tar.gz` file created by the script.
+    - This builds the release binary for local testing if needed.
+2.  Push a new tag (e.g., `v0.1.0`) to GitHub.
+    - The GitHub Action "Release" will automatically build binaries for Linux (x86), macOS (x86), and macOS (ARM).
+    - It will create a Draft Release with `.tar.gz` artifacts and their `.sha256` checksums attached.
+3.  Go to GitHub Releases and publish the draft.
+4.  Copy the SHA256 checksum from the generated `.sha256` file.
+5.  Update your Homebrew tap Formula with the new URL and SHA.
 
-Users can then install it automatically using the `curl` command above.
+## Uninstall
+
+### If installed via Installer (Curl)
+
+Remove the binary from your path:
+
+```bash
+sudo rm /usr/local/bin/json-diff
+```
+
+### If installed via Homebrew
+
+```bash
+brew uninstall json-diff
+brew untap stevenselcuk/tap
+```

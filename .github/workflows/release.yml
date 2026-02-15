@@ -22,7 +22,7 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-          - os: macos-latest
+          - os: macos-13
             target: x86_64-apple-darwin
           - os: macos-14
             target: aarch64-apple-darwin
@@ -68,9 +68,18 @@ jobs:
       - name: Display Artifacts
         run: ls -R artifacts
 
+      - name: Generate SHA256 Checksums
+        run: |
+          cd artifacts
+          for file in *.tar.gz; do
+            shasum -a 256 "$file" > "$file.sha256"
+          done
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: artifacts/*.tar.gz
+          files: |
+            artifacts/*.tar.gz
+            artifacts/*.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
