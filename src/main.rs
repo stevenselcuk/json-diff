@@ -55,7 +55,16 @@ const BG_EMPTY: Color = Color::Reset;        // Matches default bg
 const MAX_JSON_FORMAT_SIZE: u64 = 300 * 1024 * 1024; // 300 MB Limit for Pretty Print
 
 #[derive(Parser, Debug)]
-#[command(author, version, about)]
+#[command(author, version, about, after_help = "
+CONTROLS:
+  N / P          : Jump to Next / Previous Change
+  Range 1-3      : Resolve Conflict (1: Pick Left, 2: Pick Right, 3: Pick Both)
+  Arrow Left     : Pick Left (File 1)
+  Arrow Right    : Pick Right (File 2)
+  Backspace      : Un-resolve (Reset)
+  S              : Save Merged Output
+  Q / Esc        : Quit
+")]
 struct Args {
     /// The first file (Base/Original)
     file1: PathBuf,
@@ -351,9 +360,8 @@ async fn run_app(terminal: &mut io::Stdout, app: &mut App) -> Result<()> {
                                 KeyCode::Enter => {
                                     let path = input.clone();
                                     app.state = AppState::Done; // Restore state first
-                                    if let Err(e) = save_merged_output(app, &path) {
-                                         // Error handling?
-                                         // TODO: Maybe go to Error state or Flash message
+                                    if let Err(_e) = save_merged_output(app, &path) {
+                                        
                                     }
                                 }
                                 KeyCode::Esc => {
@@ -493,13 +501,37 @@ fn ui(f: &mut Frame, app: &mut App) {
 }
 
 fn draw_saving_popup(f: &mut Frame, input: &str, area: Rect) {
+    let popup_area = centered_rect(50, 5, area); // Increased height to 5
+    
+    // Clear the background of the popup area
+    f.render_widget(ratatui::widgets::Clear, popup_area);
+    
+    let block = Block::default()
+        .borders(Borders::ALL)
+        .title(" Save As ")
+        .title_style(Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD))
+        .border_style(Style::default().fg(Color::Yellow));
+        
+    let inner_area = block.inner(popup_area);
+    f.render_widget(block, popup_area);
+    
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+             Constraint::Length(1), // Input
+             Constraint::Length(1), // Spacer
+             Constraint::Length(1), // Hint
+        ])
+        .split(inner_area);
+
     let p = Paragraph::new(input)
-        .style(Style::default().fg(Color::Yellow))
-        .block(Block::default()
-            .borders(Borders::ALL)
-            .title(" Save As (Enter to confirm, Esc to cancel) ")
-            .border_style(Style::default().fg(Color::Yellow)));
-    f.render_widget(p, centered_rect(60, 3, area)); // Less height for input
+        .style(Style::default().fg(Color::White));
+    f.render_widget(p, chunks[0]);
+    
+    let hint = Paragraph::new(" [Enter]: Confirm or [Esc]: Cancel ")
+        .alignment(Alignment::Center)
+        .style(Style::default().fg(Color::DarkGray));
+    f.render_widget(hint, chunks[2]);
 }
 
 fn draw_diff_view(f: &mut Frame, app: &mut App, area: Rect) {
@@ -514,18 +546,30 @@ fn draw_diff_view(f: &mut Frame, app: &mut App, area: Rect) {
 
     // HEADER
     let header_style = Style::default().fg(Color::White).bg(HEADER_BG).add_modifier(Modifier::BOLD);
-    let header_text = format!("   {} ◄──► {} ", app.file1_name, app.file2_name);
+    let header_text = format!(" {} ◄──► {} ", app.file1_name, app.file2_name);
     f.render_widget(Paragraph::new(header_text).alignment(Alignment::Center).style(header_style), layout[0]);
 
     // FOOTER
-    let footer_style = Style::default().fg(LINE_NUM_FG).bg(BG_CANVAS);
-    let debug_info = format!(" Sel: {:?} | Res: {}/{} | Key: n/p/1/2/3", 
-        app.selected_op_index, 
-        app.resolutions.iter().filter(|r| **r != Resolution::Unresolved).count(),
-        app.resolutions.len()
+    let footer_style = Style::default().fg(Color::White).bg(HEADER_BG).add_modifier(Modifier::BOLD);
+    let sel_status = if let Some(idx) = app.selected_op_index {
+        format!("{}", idx + 1) // 1-based index
+    } else {
+        "-".to_string()
+    };
+    
+    let resolved_count = app.resolutions.iter().filter(|r| **r != Resolution::Unresolved).count();
+    let total_count = app.resolutions.len();
+    
+    // Condense info into one line
+    let help_text = format!(" [↑/↓/N/P]: Navigate | [1/2/3/←/→]: Pick | [Backspace]: Reset | [S]: Save | [Q]: Quit | Diff: {}/{} | Resolved: {}/{} ", 
+        sel_status, 
+        total_count,
+        resolved_count,
+        total_count
     );
+
     f.render_widget(
-        Paragraph::new(format!(" [Q]: Quit | [▼/▲]: Scroll | {}", debug_info))
+        Paragraph::new(help_text)
             .alignment(Alignment::Center)
             .style(footer_style),
         layout[2],
