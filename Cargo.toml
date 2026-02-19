@@ -1,8 +1,8 @@
 [package]
 name = "json-diff"
-version = "0.2.0"
+version = "0.2.2"
 edition = "2021"
-description = "Large JSON files diff tool with TUI output"
+description = "High Performance JSON diff tool for big files >500MB. Heavy duty easy conflict resolution for my wife. But yea you can also use the tool."
 authors = ["Steven J. Selcuk <steven@tabbythecat.com>"]
 license = "MIT"
 repository = "https://github.com/stevenselcuk/json-diff"
@@ -16,14 +16,14 @@ codegen-units = 1
 
 [dependencies]
 crossterm = "0.27"
-ratatui = "0.29" # En güncel sürüm
+ratatui = "0.29"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 similar = { version = "2.4", features = ["inline"] }
 imara-diff = "0.1.7"
 clap = { version = "4.4", features = ["derive"] }
 anyhow = "1.0"
-tokio = { version = "1", features = ["full"] } # Async runtime
-throbber-widgets-tui = "0.3" # Yükleniyor animasyonu için
+tokio = { version = "1", features = ["full"] }
+throbber-widgets-tui = "0.3"
 memmap2 = "0.9"
 rayon = "1.8"
