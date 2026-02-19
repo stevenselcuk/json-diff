@@ -1,6 +1,6 @@
 # json-diff
 
-![json-diff](https://i.imgur.com/eFEFUcO.png)
+![json-diff](https://i.imgur.com/19Jc7UN.png)
 
 A high-performance, terminal-based JSON diff tool written in Rust. It features a side-by-side view, efficient handling of large files (using memory mapping), and an **interactive merge mode** for resolving conflicts directly in the terminal.
 
