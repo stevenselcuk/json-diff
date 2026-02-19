@@ -1,6 +1,6 @@
 [package]
 name = "json-diff"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Large JSON files diff tool with TUI output"
 authors = ["Steven J. Selcuk <steven@tabbythecat.com>"]

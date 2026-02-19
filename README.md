@@ -113,7 +113,7 @@ Reminder for me:
 
 1.  Run `./package.sh`
     - This builds the release binary for local testing if needed.
-2.  Push a new tag (e.g., `v0.1.0`) to GitHub.
+2.  Push a new tag (e.g., `v0.2.0`) to GitHub.
     - The GitHub Action "Release" will automatically build binaries for Linux (x86), macOS (x86), and macOS (ARM).
     - It will create a Draft Release with `.tar.gz` artifacts and their `.sha256` checksums attached.
 3.  Go to GitHub Releases and publish the draft.
