@@ -35,12 +35,15 @@ brew install json-diff
 
 Requires Rust (via [rustup](https://rustup.rs/)).
 
-````bash
+```bash
 git clone https://github.com/stevenselcuk/json-diff.git
 cd json-diff
+```
+
 ### Manual Distribution (Pre-compiled Binary)
 
 If you downloaded the binary directly:
+
 1.  Make it executable: `chmod +x json-diff`
 2.  Move it to your path: `mv json-diff /usr/local/bin/` (or anywhere in `$PATH`)
 
@@ -61,7 +64,7 @@ Run the tool by providing two file paths:
 
 ```bash
 json-diff <file1> <file2>
-````
+```
 
 **Example:**
 
