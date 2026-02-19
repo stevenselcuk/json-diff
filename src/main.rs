@@ -251,7 +251,6 @@ async fn main() -> Result<()> {
     let f2_path = args.file2.clone();
     let tx_clone = tx.clone();
 
-    // Heavy lifting in a separate thread
     thread::spawn(move || {
         process_side_by_side(f1_path, f2_path, tx_clone);
     });
