@@ -1,4 +1,4 @@
-# json-diff
+# Steven's json diff
 
 ![json-diff](https://i.imgur.com/19Jc7UN.png)
 
